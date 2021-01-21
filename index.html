@@ -1,0 +1,187 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu+Mono" />
+		<title>Home // bliz8.</title>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script> 
+		<style>
+		/* Style the navbar */
+		body {
+		  margin: 0;
+		  font-family: Ubuntu Mono;
+		  height: 100%;
+		  background-color: #000;	
+		}
+
+		.loader {
+		    position: fixed;
+		    z-index: 99;
+		    top: 0;
+		    left: 0;
+		    width: 100%;
+		    height: 100%;
+		    background: black;
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		}
+
+		.loader > img {
+		    width: 250px;
+		}
+
+		.loader.hidden {
+		    -webkit-animation: slide-out-bottom 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) 3.5s both;
+			      animation: slide-out-bottom 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530) 3.5s both;
+		}
+
+		@-webkit-keyframes slide-out-bottom {
+		  0% {
+		    -webkit-transform: translateY(0);
+			    transform: translateY(0);
+		    opacity: 1;
+		  }
+		  100% {
+		    -webkit-transform: translateY(1000px);
+			    transform: translateY(1000px);
+		    opacity: 0;
+		  }
+		}
+
+		@keyframes slide-out-bottom {
+		  0% {
+		    -webkit-transform: translateY(0);
+			    transform: translateY(0);
+		    opacity: 1;
+		  }
+		  100% {
+		    -webkit-transform: translateY(1000px);
+			    transform: translateY(1000px);
+		    opacity: 0;
+		  }
+		}
+			
+			#console {
+				font-family: Ubuntu Mono;
+				color: #fff;
+				width:80%;
+				margin-left:auto;
+				margin-right:auto;
+				margin-top:100px;
+				font-size:14px;
+			}
+			a {
+				color: #0bc;
+				text-decoration: none;
+			}
+			#a {
+				color: #0f0;
+			}
+			#c {
+				color: #0bc;
+			}
+			#b {
+				color: #ff0096;
+			}
+		
+		</style>
+	</head>
+	<body>
+		<div class="loader">
+		    <img src="splash.gif" alt="Welcome to bliz8's Website" title="Welcome to bliz8's Website" />
+		</div>
+		
+		<script type="text/javascript"> 
+			var Typer={
+			text: null,
+			accessCountimer:null,
+			index:0, // current cursor position
+			speed:2, // speed of the Typer
+			file:"", //file, must be setted
+			accessCount:0, //times alt is pressed for Access Granted
+			deniedCount:0, //times caps is pressed for Access Denied
+			init: function(){// inizialize Hacker Typer
+				accessCountimer=setInterval(function(){Typer.updLstChr();},500); // inizialize timer for blinking cursor
+				$.get(Typer.file,function(data){// get the text file
+					Typer.text=data;// save the textfile in Typer.text
+					Typer.text = Typer.text.slice(0, Typer.text.length-1);
+				});
+			},
+
+			content:function(){
+				return $("#console").html();// get console content
+			},
+
+			write:function(str){// append to console content
+				$("#console").append(str);
+				return false;
+			},
+
+
+			addText:function(key){//Main function to add the code
+				if(key.keyCode==18){// key 18 = alt key
+					;
+				}else if(key.keyCode==20){// key 20 = caps lock
+					;
+				}else if(key.keyCode==27){ // key 27 = esc key
+					;
+				}else if(Typer.text){ // otherway if text is loaded
+					var cont=Typer.content(); // get the console content
+					if(cont.substring(cont.length-1,cont.length)=="|") // if the last char is the blinking cursor
+						$("#console").html($("#console").html().substring(0,cont.length-1)); // remove it before adding the text
+					if(key.keyCode!=8){ // if key is not backspace
+						Typer.index+=Typer.speed;	// add to the index the speed
+					}else{
+						if(Typer.index>0) // else if index is not less than 0 
+							Typer.index-=Typer.speed;//	remove speed for deleting text
+					}
+					var text=Typer.text.substring(0,Typer.index)// parse the text for stripping html enities
+					var rtn= new RegExp("\n", "g"); // newline regex
+
+					$("#console").html(text.replace(rtn,"<br/>"));// replace newline chars with br, tabs with 4 space and blanks with an html blank
+					window.scrollBy(0,50); // scroll to make sure bottom is always visible
+				}
+				if ( key.preventDefault && key.keyCode != 122 ) { // prevent F11(fullscreen) from being blocked
+					key.preventDefault()
+				};  
+				if(key.keyCode != 122){ // otherway prevent keys default behavior
+					key.returnValue = false;
+				}
+			},
+
+			updLstChr:function(){ // blinking cursor
+				var cont=this.content(); // get console 
+				;
+			}
+		}
+
+		function replaceUrls(text) {
+			var http = text.indexOf("http://");
+			var space = text.indexOf(".me ", http);
+			if (space != -1) { 
+				var url = text.slice(http, space-1);
+				return text.replace(url, "<a href=\""  + url + "\">" + url + "</a>");
+			} else {
+			return text
+		}
+		}
+		Typer.speed=3;
+		Typer.file="me.txt";
+
+		</script> 
+		<div id="console"></div> 
+		<script>
+		window.addEventListener("load", function () {
+		    const loader = document.querySelector(".loader");
+		    loader.className += " hidden"; // class "loader hidden"
+		    Typer.init();
+			
+		    function t() {
+			Typer.addText({"keyCode": 123748});
+			if (Typer.index > Typer.content()) {
+				clearInterval(timer);
+          		}
+		     }
+		     var timer = setInterval(t, 30);
+
+		});
+		</script>
